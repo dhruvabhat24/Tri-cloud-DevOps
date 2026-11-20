@@ -13,9 +13,9 @@ run "mocked_resources_are_valid" {
   command = plan
 
   variables {
-    enable_cloud_resources   = true
-    billing_acknowledgement  = "I_UNDERSTAND_THIS_MAY_COST_MONEY"
-    artifact_bucket_name     = "mock-multicloud-devops-artifacts"
+    enable_cloud_resources  = true
+    billing_acknowledgement = "I_UNDERSTAND_THIS_MAY_COST_MONEY"
+    artifact_bucket_name    = "mock-multicloud-devops-artifacts"
   }
 
   assert {
