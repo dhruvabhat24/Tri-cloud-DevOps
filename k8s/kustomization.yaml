@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: multicloud-devops
+resources:
+  - namespace.yaml
+  - resource-quota.yaml
+  - limit-range.yaml
+  - service-account.yaml
+  - configmap.yaml
+  - redis-service.yaml
+  - redis-deployment.yaml
+  - api-service.yaml
+  - api-deployment.yaml
+  - pod-disruption-budget.yaml
+  - network-policies.yaml
+images:
+  - name: multicloud-task-api
+    newName: multicloud-task-api
+    newTag: 1.0.0

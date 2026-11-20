@@ -1,0 +1,36 @@
+services:
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 20
+    networks: [appnet]
+
+  api:
+    build:
+      context: .
+      args:
+        APP_VERSION: compose
+    image: multicloud-task-api:1.0.0
+    environment:
+      STORE_BACKEND: redis
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      DEPLOYMENT_TARGET: docker-compose
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    networks: [appnet]
+
+networks:
+  appnet:
