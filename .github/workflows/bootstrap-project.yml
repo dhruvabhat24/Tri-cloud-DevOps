@@ -1,0 +1,42 @@
+name: Bootstrap project repository
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/bootstrap-project.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    if: github.repository == 'dhruvabhat24/Tri-cloud-DevOps'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reconstruct and verify project archive
+        shell: bash
+        run: |
+          cat .bootstrap/part-* | base64 --decode > /tmp/tricloud-project.tar.gz
+          echo "5b521bbabe9f5411be1370494632db4228322088c3a944f27560398e3e86603d  /tmp/tricloud-project.tar.gz" | sha256sum --check
+
+      - name: Extract complete project
+        shell: bash
+        run: |
+          tar -xzf /tmp/tricloud-project.tar.gz -C .
+          rm -rf .bootstrap
+
+      - name: Commit project files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git commit -m "Add complete Tri-Cloud DevOps project"
+          git push origin HEAD:main
